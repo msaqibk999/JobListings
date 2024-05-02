@@ -6,17 +6,26 @@ import { connect } from "react-redux";
 import debounce from "../utils/debounce";
 
 const JobList = ({ filters }) => {
+  // Declaring a state for jobs
   const [jobs, setJobs] = useState([]);
+  // Declaring a state for filtered jobs
   const [filteredJobs, setFilteredJobs] = useState([]);
+  // Declaring a loading state for async requests
   const [loading, setLoading] = useState(true);
+  // Declaring a state to manage offset for fetching jobs
   const [offset, setOffset] = useState(0);
 
+  // function to fetch jobs
   const fetchJobs = () => {
+    // setting loading to true before making request
     setLoading(true);
+
+    // putting headers
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
     const raw = JSON.stringify({
+      // Setting a limit of 9 jobs per fetch
       limit: 9,
       offset: offset,
     });
@@ -34,12 +43,15 @@ const JobList = ({ filters }) => {
       .then((response) => response.json())
       .then((result) => {
         if (result && result.jdList) {
+          // Updating jobs by concatinating the fresh fetched jobs
           setJobs((prev) => {
             const newJobs = [...prev, ...result.jdList];
+            // sending the new jobs to apply the selected filters and put to filteredJobs
             setFilteredJobsFunction(newJobs);
             return newJobs;
           });
         }
+        // removing the loader post fetching
         setLoading(false);
       })
       .catch((error) => console.error(error));
@@ -109,9 +121,11 @@ const JobList = ({ filters }) => {
     if (jobs.length !== 0 && filteredJobs.length < 8) {
       setOffset((prev) => prev + 1);
     }
+    // updating filtered jobs
     setFilteredJobs(filteredJobs);
   };
 
+  // function to load fresh jobs when touching the bottom
   const handleInfiniteScroll = async () => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 1 >=
@@ -121,8 +135,10 @@ const JobList = ({ filters }) => {
     }
   };
 
+  // debounced the handleInfiniteScroll function to avoid multiple fetches by touching bottom multiple times in less than a second
   const debouncedHandleInfiniteScroll = debounce(handleInfiniteScroll, 800);
 
+  // useEffect for adding a scroll listener
   useEffect(() => {
     window.addEventListener("scroll", debouncedHandleInfiniteScroll);
 
@@ -132,11 +148,13 @@ const JobList = ({ filters }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // useEffect to fetch new jobs for first time and on every offset change
   useEffect(() => {
     fetchJobs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offset]); // Fetch jobs when offset changes
 
+  // useEffect to filter jobs on filters change by the user
   useEffect(() => {
     setFilteredJobsFunction(jobs); // Update filtered jobs whenever filters change
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -172,8 +190,10 @@ const JobList = ({ filters }) => {
   );
 };
 
+// mapping the filters state to the filters prop of JobList component
 const mapStateToProps = (state) => ({
   filters: state.filter.filters,
 });
 
+// connecting the component to redux-store and default exporting it
 export default connect(mapStateToProps)(JobList);

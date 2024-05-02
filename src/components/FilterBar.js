@@ -6,8 +6,8 @@ import debounce from "../utils/debounce";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 
-
 const FilterBar = ({ applyFilter }) => {
+  // Declaring a state object for filters
   const [filters, setFilters] = useState({
     minExperience: "",
     minBasePay: "",
@@ -22,21 +22,32 @@ const FilterBar = ({ applyFilter }) => {
   const [shrinkRole, setShrinkRole] = useState(false);
   const [shrinkTechStack, setShrinkTechStack] = useState(false);
 
+  // function to append filters to redux managed state
   const applyFiltersFun = (name, value) => {
     applyFilter({ ...filters, [name]: value });
   };
 
+  // function to debounce applyFilterFun for typed changes to filters
   const debouncesApplyFiltersFun = debounce(applyFiltersFun, 1000);
 
+  // fucntion to handle changes in input type: text
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+
+    // appending the filter to respective name
     setFilters({ ...filters, [name]: value });
+
+    // making state updatsx based on changes
     debouncesApplyFiltersFun(name, value);
   };
 
+  // function to handle changes in chip type input
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
+      // prevent event bubbling
       event.preventDefault();
+
+      // selected role
       if (event.target.name === "roles") {
         const newRole = event.target.value.trim();
         if (newRole) {
@@ -45,6 +56,8 @@ const FilterBar = ({ applyFilter }) => {
         }
         event.target.value = "";
       }
+
+      // selected tech stack
       if (event.target.name === "techStack") {
         const newtechStack = event.target.value.trim();
         if (newtechStack) {
@@ -62,18 +75,23 @@ const FilterBar = ({ applyFilter }) => {
     }
   };
 
+  // funtion to handle changes in input type select
   const handleSelectChange = (event) => {
     const { name, value } = event.target;
     setFilters({ ...filters, [name]: value });
     applyFiltersFun(name, value);
   };
 
+  // function to delete a chip in input
   const handleDelete = (type, toDelete) => () => {
     if (type === "role") {
+      // removing the filter from component state
       setFilters({
         ...filters,
         roles: filters.roles.filter((role) => role !== toDelete),
       });
+
+      // removing the filter from global state managed by redux
       debouncesApplyFiltersFun(
         "roles",
         filters.roles.filter((role) => role !== toDelete)
@@ -93,6 +111,7 @@ const FilterBar = ({ applyFilter }) => {
   };
 
   return (
+    // container Grid
     <Grid
       container
       spacing={1}
@@ -100,6 +119,7 @@ const FilterBar = ({ applyFilter }) => {
       alignItems="center"
       columns={{ xs: 2, md: 7, lg: 7 }}
     >
+      {/* Experience Filter */}
       <Grid item xs={1} sm={1} md={1} lg>
         <TextField
           select
@@ -118,6 +138,8 @@ const FilterBar = ({ applyFilter }) => {
           ))}
         </TextField>
       </Grid>
+
+      {/* Company name filter */}
       <Grid item xs={1} sm={1} md={1} lg>
         <TextField
           name="companyName"
@@ -128,6 +150,8 @@ const FilterBar = ({ applyFilter }) => {
           variant="outlined"
         />
       </Grid>
+
+      {/* Location filter */}
       <Grid item xs={1} sm={1} md={1} lg>
         <TextField
           name="location"
@@ -138,6 +162,8 @@ const FilterBar = ({ applyFilter }) => {
           variant="outlined"
         />
       </Grid>
+
+      {/* Job type filter (Remote/Onsite) */}
       <Grid item xs={1} sm={1} md={1} lg>
         <TextField
           select
@@ -155,7 +181,16 @@ const FilterBar = ({ applyFilter }) => {
           <MenuItem value="onsite">Onsite</MenuItem>
         </TextField>
       </Grid>
-      <Grid item xs={1} sm={1} md={1} lg>
+
+      {/* Tech stack filter */}
+      <Grid
+        item
+        xs={1}
+        sm={1}
+        md={1}
+        lg
+        style={{ maxWidth: "10.6rem", overflowX: "auto" }}
+      >
         <TextField
           name="techStack"
           label="Tech Stack"
@@ -166,13 +201,12 @@ const FilterBar = ({ applyFilter }) => {
           onBlur={(e) =>
             setShrinkTechStack(filters.techStack.length > 0 || !!e.target.value)
           }
-          fullWidth
           onKeyDown={handleKeyDown}
           variant="outlined"
           InputProps={{
-            style: { overflowX: "auto", maxWidth: "10.6rem" },
+            style: { width: "100%" },
             startAdornment:
-              filters.techStack.length > 0 ? (
+              filters.techStack ? (
                 filters.techStack.map((role) => (
                   <Chip
                     key={role}
@@ -187,7 +221,16 @@ const FilterBar = ({ applyFilter }) => {
           }}
         />
       </Grid>
-      <Grid item xs={1} sm={1} md={1} lg style={{ maxWidth: "10.6rem", overflowX: "auto" }}>
+
+      {/* Roles Filter */}
+      <Grid
+        item
+        xs={1}
+        sm={1}
+        md={1}
+        lg
+        style={{ maxWidth: "10.6rem", overflowX: "auto" }}
+      >
         <TextField
           name="roles"
           label="Roles"
@@ -217,6 +260,8 @@ const FilterBar = ({ applyFilter }) => {
           }}
         />
       </Grid>
+
+      {/* Mininum base pay filter */}
       <Grid item xs={1} sm={1} md={1} lg>
         <TextField
           select
@@ -242,4 +287,7 @@ const FilterBar = ({ applyFilter }) => {
   );
 };
 
+// connecting the component to redux-store and default exporing it
+// passed null as no need for subscription to state updates
+// mapped applyFilter action creator to the props
 export default connect(null, { applyFilter })(FilterBar);
