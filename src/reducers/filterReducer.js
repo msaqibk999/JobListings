@@ -12,6 +12,7 @@ const initialState = {
   }, // Object to hold applied filters
 };
 
+// Reducer function to apply filter changes
 const filterReducer = (state = initialState, action) => {
   switch (action.type) {
     case APPLY_FILTER:

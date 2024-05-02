@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Card, CardContent, Typography, Button, Box } from "@material-ui/core";
 
 const JobCard = ({ job }) => {
+  // destructing the job object
   const {
     jobRole,
     location,
@@ -10,9 +11,13 @@ const JobCard = ({ job }) => {
     jdLink,
     maxJdSalary,
     minJdSalary,
-    image
+    image,
   } = job;
+
+  // Declaring state to manage expansion
   const [expanded, setExpanded] = useState(false);
+
+  // custom class for managing expansion
   const descriptionClassName = `description-container ${
     expanded ? "expanded" : "collapsed"
   }`;
@@ -31,15 +36,25 @@ const JobCard = ({ job }) => {
       }}
     >
       <CardContent>
-        <Box sx={{display:"flex", alignItems:"center", justifyContent:"flex-start"}}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-start",
+          }}
+        >
           <Box
             component="img"
             alt="The house from the offer."
-            src={ image ? image : "https://upload.wikimedia.org/wikipedia/commons/1/19/C_Logo.png"}
+            src={
+              image
+                ? image
+                : "https://upload.wikimedia.org/wikipedia/commons/1/19/C_Logo.png"
+            }
             height={60}
             width={50}
           />
-          <Box style={{margin: "0.5rem 0 0 1rem"}}>
+          <Box style={{ margin: "0.5rem 0 0 1rem" }}>
             <Typography variant="h5" component="h2">
               {jobRole.toUpperCase()}
             </Typography>
@@ -66,9 +81,10 @@ const JobCard = ({ job }) => {
               {expanded
                 ? `${jobDetailsFromCompany.slice(0, 420)}...`
                 : jobDetailsFromCompany}
-              {/* Show "Read More" button if description is longer than 150 characters */}
             </Typography>
           </div>
+
+          {/* Show "View Job" button if description is longer than 150 characters */}
           {jobDetailsFromCompany.length > 150 && (
             <Box textAlign="center">
               <Button color="primary" onClick={toggleExpand}>
