@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 .App {
   text-align: center;
 }
@@ -35,4 +39,24 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.description-container {
+  position: relative;
+  overflow: hidden;
+  height: 12rem;
+}
+
+.collapsed::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 50%;
+  background: linear-gradient(rgba(255, 255, 255, 0), white);
+}
+
+.expanded {
+  height: 20rem;
 }
