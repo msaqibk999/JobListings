@@ -1,5 +1,7 @@
-Clone the repo
+Clone the repo: git clone https://github.com/msaqibk999/JobListings.git
+
 run: npm install 
+
 run: npm start 
 
 **Note**
