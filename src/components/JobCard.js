@@ -3,7 +3,9 @@ import { Card, CardContent, Typography, Button, Box } from "@material-ui/core";
 
 const JobCard = ({ job }) => {
   // destructing the job object
+  console.log(job)
   const {
+    companyName,
     jobRole,
     location,
     jobDetailsFromCompany,
@@ -11,7 +13,7 @@ const JobCard = ({ job }) => {
     jdLink,
     maxJdSalary,
     minJdSalary,
-    image,
+    logoUrl,
   } = job;
 
   // Declaring state to manage expansion
@@ -39,7 +41,7 @@ const JobCard = ({ job }) => {
         <Box
           sx={{
             display: "flex",
-            alignItems: "center",
+            alignItems: "flex-start",
             justifyContent: "flex-start",
           }}
         >
@@ -47,15 +49,19 @@ const JobCard = ({ job }) => {
             component="img"
             alt="The house from the offer."
             src={
-              image
-                ? image
+              logoUrl
+                ? logoUrl
                 : "https://upload.wikimedia.org/wikipedia/commons/1/19/C_Logo.png"
             }
-            height={60}
-            width={50}
+            height={45}
+            width={45}
+            sx={{marginTop: "0.5rem"}}
           />
-          <Box style={{ margin: "0.5rem 0 0 1rem" }}>
-            <Typography variant="h5" component="h2">
+          <Box style={{ margin: "0 0 0 1rem" }}>
+          <Typography variant="h6" color="textSecondary">
+              {companyName ? companyName : "N/A"}
+            </Typography>
+            <Typography variant="h6">
               {jobRole.toUpperCase()}
             </Typography>
             <Typography color="textSecondary" gutterBottom>
